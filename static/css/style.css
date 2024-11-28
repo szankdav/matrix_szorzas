@@ -1,8 +1,9 @@
 body {
-    background: url("../assets/bg.png");
+  background-color: burlywood;
+    /* background: url("../assets/bg.png");
     background-repeat: no-repeat;
     background-size: 100% 100%;
-    background-attachment: fixed;
+    background-attachment: fixed; */
   }
 
 #matrix_size_error{

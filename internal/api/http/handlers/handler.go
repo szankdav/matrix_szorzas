@@ -11,7 +11,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var matrix [][]int
+var a_matrix [][]int
+var b_matrix [][]int
 
 func DataFromRequestBody(c *gin.Context) (map[string]string, error) {
 	reqBody, err := io.ReadAll(c.Request.Body)
@@ -55,19 +56,38 @@ func BuildMatrix(c *gin.Context) {
 		fmt.Println("Error while parsing data:", err)
 	}
 
-	if len(matrix) == 0 {
-		matrix = make([][]int, matrix_row)
-		fmt.Println(matrix)
-		for i := range matrix {
-			matrix[i] = make([]int, matrix_column)
+	matrix_name := datas["matrix_name"]
+
+	if matrix_name == "a" {
+		if len(a_matrix) == 0 {
+			a_matrix = make([][]int, matrix_row)
+			fmt.Println(a_matrix)
+			for i := range a_matrix {
+				a_matrix[i] = make([]int, matrix_column)
+			}
+			a_matrix[selected_row-1][selected_column-1] = matrix_number
+		} else {
+			a_matrix[selected_row-1][selected_column-1] = matrix_number
 		}
-		matrix[selected_row-1][selected_column-1] = matrix_number
 	} else {
-		matrix[selected_row-1][selected_column-1] = matrix_number
+		if len(b_matrix) == 0 {
+			b_matrix = make([][]int, matrix_row)
+			fmt.Println(b_matrix)
+			for i := range b_matrix {
+				b_matrix[i] = make([]int, matrix_column)
+			}
+			b_matrix[selected_row-1][selected_column-1] = matrix_number
+		} else {
+			b_matrix[selected_row-1][selected_column-1] = matrix_number
+		}
 	}
 
-	fmt.Println(matrix)
-	fmt.Println(selected_column)
-	fmt.Println(matrix)
-	c.JSON(http.StatusAccepted, matrix)
+	fmt.Println(a_matrix)
+	fmt.Println(b_matrix)
+
+	if matrix_name == "a" {
+		c.JSON(http.StatusAccepted, a_matrix)
+	} else {
+		c.JSON(http.StatusAccepted, b_matrix)
+	}
 }
