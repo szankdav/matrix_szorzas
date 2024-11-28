@@ -14,6 +14,12 @@ import (
 var a_matrix [][]int
 var b_matrix [][]int
 
+type Response struct {
+	Matrix_name string  `json:"matrix_name"`
+	Matrix      [][]int `json:"matrix"`
+	Matrix_full bool    `json:"matrix_full"`
+}
+
 func DataFromRequestBody(c *gin.Context) (map[string]string, error) {
 	reqBody, err := io.ReadAll(c.Request.Body)
 	var body map[string]string
@@ -84,10 +90,31 @@ func BuildMatrix(c *gin.Context) {
 
 	fmt.Println(a_matrix)
 	fmt.Println(b_matrix)
+	is_a_matrix_filled := true
+	is_b_matrix_filled := true
+
+	for _, row := range a_matrix {
+		for _, column := range row {
+			if column == 0 {
+				is_a_matrix_filled = false
+			}
+		}
+	}
+
+	for _, row := range b_matrix {
+		for _, column := range row {
+			if column == 0 {
+				is_b_matrix_filled = false
+			}
+		}
+	}
+
+	response_for_a_matrix := Response{Matrix_name: "a", Matrix: a_matrix, Matrix_full: is_a_matrix_filled}
+	response_for_b_matrix := Response{Matrix_name: "b", Matrix: b_matrix, Matrix_full: is_b_matrix_filled}
 
 	if matrix_name == "a" {
-		c.JSON(http.StatusAccepted, a_matrix)
+		c.JSON(http.StatusAccepted, response_for_a_matrix)
 	} else {
-		c.JSON(http.StatusAccepted, b_matrix)
+		c.JSON(http.StatusAccepted, response_for_b_matrix)
 	}
 }
